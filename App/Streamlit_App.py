@@ -198,7 +198,7 @@ else:
     if st.button('Predict'):
         progress_bar = st.progress(0)
         for i in range(100):
-            time.sleep(0.02)
+            time.sleep(0.05)
             progress_bar.progress(i+1)
             
         with open('./Pickle Files/GBM_Model.pkl', 'rb') as file:
