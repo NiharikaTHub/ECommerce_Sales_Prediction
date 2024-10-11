@@ -191,7 +191,7 @@ else:
         scaler = pickle.load(file)
     
     df_scaled = scaler.transform(df)
-    st.write(df_scaled)
+    # st.write(df_scaled)
 
     if st.button('Predict'):
         with open('./Pickle Files/GBM_Model.pkl', 'rb') as file:
