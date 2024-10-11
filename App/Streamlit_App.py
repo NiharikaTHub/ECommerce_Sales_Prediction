@@ -187,14 +187,14 @@ else:
     )
 
     st.write(df)
-    with open('./Notebook/Scaler.pkl', 'rb') as file:
+    with open('./Pickle Files/Scaler.pkl', 'rb') as file:
         scaler = pickle.load(file)
     
     df_scaled = scaler.transform(df)
     st.write(df_scaled)
 
     if st.button('Predict'):
-        with open('./Models/GBM_Model.pkl', 'rb') as file:
+        with open('./Pickle Files/GBM_Model.pkl', 'rb') as file:
             model = pickle.load(file)
         
         predicted_sales = model.predict(df_scaled)
