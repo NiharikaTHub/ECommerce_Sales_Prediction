@@ -205,4 +205,4 @@ else:
             model = pickle.load(file)
         
         predicted_sales = model.predict(df_scaled)
-        st.write(f'Predicted Outlet Sales for the Item: ${predicted_sales[0]}')
+        st.write(f'Predicted Outlet Sales for the Item: ${predicted_sales[0]:.2f}')
