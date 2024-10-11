@@ -5,6 +5,7 @@ import sys
 import os
 import pickle
 import sklearn
+import time
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.model_selection import KFold, cross_val_score
 from sklearn.model_selection import train_test_split
@@ -195,6 +196,11 @@ else:
     # st.write(df_scaled)
 
     if st.button('Predict'):
+        progress_bar = st.progress(0)
+        for i in range(100):
+            time.sleep(0.02)
+            progress_bar.progress(i+1)
+            
         with open('./Pickle Files/GBM_Model.pkl', 'rb') as file:
             model = pickle.load(file)
         
