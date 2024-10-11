@@ -186,6 +186,7 @@ else:
          }
     )
 
+    st.write('User Input Values:')
     st.write(df)
     with open('./Pickle Files/Scaler.pkl', 'rb') as file:
         scaler = pickle.load(file)
@@ -199,5 +200,3 @@ else:
         
         predicted_sales = model.predict(df_scaled)
         st.write(f'Predicted Outlet Sales for the Item: ${predicted_sales}')
-
-# sklearn: 1.4.0 numpy: 1.26.4 pandas: 2.2.3 pickle: 4.0 '3.11.7 (main, Dec 15 2023, 12:09:04) [Clang 14.0.6 ]'
