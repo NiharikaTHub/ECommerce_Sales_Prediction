@@ -189,6 +189,9 @@ else:
     outlet_type_mapping = {'Grocery Store':0, 'Supermarket Type1':1, 
                            'Supermarket Type2':2, 'Supermarket Type3':3}
     # outlet_age = st.slider('Outlet Age', min_value=0, max_value=50, value=15)
+    def calculate_outlet_age(outlet_year):
+        current_year = datetime.now().year
+        return current_year - outlet_year
     outlet_age = calculate_outlet_age(outlet_details['year'])
     
 
