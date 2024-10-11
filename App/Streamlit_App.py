@@ -6,6 +6,7 @@ import os
 import pickle
 import sklearn
 import time
+from datetime import datetime
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.model_selection import KFold, cross_val_score
 from sklearn.model_selection import train_test_split
@@ -137,49 +138,72 @@ elif menu == 'EDA':
 
 else:
     st.header('Input Features')
+    outlet_info = {
+        'OUT010': {'size': 'Small', 'type': 'Grocery Store', 'year': 1998, 'location': 'Tier 3'},
+        'OUT013': {'size': 'Large', 'type': 'Supermarket Type1', 'year': 1987, 'location': 'Tier 3'},
+        'OUT017': {'size': 'Small', 'type': 'Supermarket Type1', 'year': 2007, 'location': 'Tier 2'},
+        'OUT018': {'size': 'Medium', 'type': 'Supermarket Type2', 'year': 2009, 'location': 'Tier 3'},
+        'OUT019': {'size': 'Small', 'type': 'Grocery Store', 'year': 1985, 'location': 'Tier 1'},
+        'OUT027': {'size': 'Medium', 'type': 'Supermarket Type3', 'year': 1985, 'location': 'Tier 3'},
+        'OUT035': {'size': 'Small', 'type': 'Supermarket Type1', 'year': 2004, 'location': 'Tier 2'},
+        'OUT045': {'size': 'Small', 'type': 'Supermarket Type1', 'year': 2002, 'location': 'Tier 2'},
+        'OUT046': {'size': 'Small', 'type': 'Supermarket Type1', 'year': 1997, 'location': 'Tier 1'},
+        'OUT049': {'size': 'Medium', 'type': 'Supermarket Type1', 'year': 1999, 'location': 'Tier 1'},
+    }
+    
     item_weight = st.number_input('Item Weight (lbs)', min_value=2.0, 
                                   max_value=30.0, value=13.0)
-    
-    item_categories = st.radio('Item Category', ['Drink', 'Food', 'Non-Consumable'], horizontal=True)
-    
     item_fat_content = st.selectbox('Item Fat Content', ['Low Fat', 'Regular Fat'])
-    
     item_visibility = st.number_input('Item Visibility', min_value=0.0, 
                                       max_value=5.0, value=0.06)
     item_mrp = st.slider('Item MRP', min_value=10.0, max_value=350.0, value=140.0)
     
+    item_categories = st.radio('Item Category', ['Drink', 'Food', 'Non-Consumable'], horizontal=True)
     item_mrp_category = st.radio('Item MRP Category Type', ['First (0-69)', 'Second (70-135)', 
                          'Third (136-202)', 'Fourth (203-270)'], horizontal=True)
-    
     item_mrp_category_mapping = {'First (0-69)':0, 'Second (70-135)':2, 'Third (136-202)':3, 'Fourth (203-270)':1}
     
-    outlet_identifier = st.selectbox('Outlet ID', ['OUT010', 'OUT045', 'OUT017', 
-                                                   'OUT046', 'OUT035', 'OUT019', 
-                                                   'OUT049', 'OUT018', 'OUT027', 
-                                                   'OUT013'])
+    # outlet_identifier = st.selectbox('Outlet ID', ['OUT010', 'OUT045', 'OUT017', 
+    #                                                'OUT046', 'OUT035', 'OUT019', 
+    #                                                'OUT049', 'OUT018', 'OUT027', 
+    #                                                'OUT013'])
+    outlet_identifier = st.selectbox('Outlet ID', list(outlet_info.keys()))
     outlet_identifier_mapping = {'OUT010':0, 'OUT013':1, 'OUT017':2, 'OUT018':3, 'OUT019':4, 
                                  'OUT027':5, 'OUT035':6, 'OUT045':7, 'OUT046':8, 'OUT049':9}
-
-    outlet_age = st.slider('Outlet Age', min_value=0, max_value=50, value=15)
+    outlet_details = outlet_info[outlet_identifier]
     
-    outlet_size = st.radio('Outlet Size', ['Small', 'Medium', 'Large'], horizontal=True)
+    # outlet_size = st.radio('Outlet Size', ['Small', 'Medium', 'Large'], horizontal=True)
+    outlet_size = outlet_details['size']
+    outlet_size_mapping = {'Small': 2, 'Medium': 1, 'Large': 0}
     
-    outlet_location_type = st.radio('Outlet Location Type', ['Tier 1', 'Tier 2', 'Tier 3'], 
-                                    horizontal=True)
+    # outlet_location_type = st.radio('Outlet Location Type', ['Tier 1', 'Tier 2', 'Tier 3'], 
+    #                                 horizontal=True)
+    outlet_location_type = outlet_details['location']
+    outlet_location_type_mapping = {'Tier 1': 0, 'Tier 2': 1, 'Tier 3': 2}
     
-    outlet_type = st.radio('Outlet Type', ['Grocery Store', 'Supermarket Type1', 
-                                           'Supermarket Type2', 'Supermarket Type3'], 
-                                           horizontal=True)
+    # outlet_type = st.radio('Outlet Type', ['Grocery Store', 'Supermarket Type1', 
+    #                                        'Supermarket Type2', 'Supermarket Type3'], 
+    #                                        horizontal=True)
+    outlet_type = outlet_details['type']
     outlet_type_mapping = {'Grocery Store':0, 'Supermarket Type1':1, 
                            'Supermarket Type2':2, 'Supermarket Type3':3}
+    # outlet_age = st.slider('Outlet Age', min_value=0, max_value=50, value=15)
+    outlet_age = calculate_outlet_age(outlet_details['year'])
+    
+
+    st.write(f"Outlet Size: {outlet_size}")
+    st.write(f"Outlet Age: {outlet_age}")
+    st.write(f"Outlet Type: {outlet_type}")
+    st.write(f"Outlet Location Type: {outlet_location_type}")
+
     df = pd.DataFrame(
         {'Item_Weight':[item_weight], 
          'Item_Fat_Content':[0 if item_fat_content=='Low Fat' else 1],
          'Item_Visibility':[item_visibility],
          'Item_MRP':[item_mrp],
          'Outlet_Identifier':outlet_identifier_mapping[outlet_identifier],
-         'Outlet_Size':[2 if outlet_size=='Small' else 1 if outlet_size=='Medium' else 0],
-         'Outlet_Location_Type':[0 if outlet_location_type=='Tier 1' else 1 if outlet_location_type=='Tier2' else 2],
+         'Outlet_Size':[outlet_size_mapping[outlet_size]],
+         'Outlet_Location_Type':[outlet_location_type_mapping[outlet_location_type]],
          'Outlet_Type':outlet_type_mapping[outlet_type],
          'Item_Categories':[0 if item_categories=='Drink' else 1 if item_categories=='Food' else 2],
          'Outlet_Age':[outlet_age],
