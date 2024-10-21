@@ -164,37 +164,26 @@ else:
                          'Third (136-202)', 'Fourth (203-270)'], horizontal=True)
     item_mrp_category_mapping = {'First (0-69)':0, 'Second (70-135)':2, 'Third (136-202)':3, 'Fourth (203-270)':1}
     
-    # outlet_identifier = st.selectbox('Outlet ID', ['OUT010', 'OUT045', 'OUT017', 
-    #                                                'OUT046', 'OUT035', 'OUT019', 
-    #                                                'OUT049', 'OUT018', 'OUT027', 
-    #                                                'OUT013'])
     outlet_identifier = st.selectbox('Outlet ID', list(outlet_info.keys()))
     outlet_identifier_mapping = {'OUT010':0, 'OUT013':1, 'OUT017':2, 'OUT018':3, 'OUT019':4, 
                                  'OUT027':5, 'OUT035':6, 'OUT045':7, 'OUT046':8, 'OUT049':9}
     outlet_details = outlet_info[outlet_identifier]
     
-    # outlet_size = st.radio('Outlet Size', ['Small', 'Medium', 'Large'], horizontal=True)
     outlet_size = outlet_details['size']
     outlet_size_mapping = {'Small': 2, 'Medium': 1, 'Large': 0}
     
-    # outlet_location_type = st.radio('Outlet Location Type', ['Tier 1', 'Tier 2', 'Tier 3'], 
-    #                                 horizontal=True)
     outlet_location_type = outlet_details['location']
     outlet_location_type_mapping = {'Tier 1': 0, 'Tier 2': 1, 'Tier 3': 2}
     
-    # outlet_type = st.radio('Outlet Type', ['Grocery Store', 'Supermarket Type1', 
-    #                                        'Supermarket Type2', 'Supermarket Type3'], 
-    #                                        horizontal=True)
     outlet_type = outlet_details['type']
     outlet_type_mapping = {'Grocery Store':0, 'Supermarket Type1':1, 
                            'Supermarket Type2':2, 'Supermarket Type3':3}
-    # outlet_age = st.slider('Outlet Age', min_value=0, max_value=50, value=15)
+
     def calculate_outlet_age(outlet_year):
         current_year = datetime.now().year
         return current_year - outlet_year
     outlet_age = calculate_outlet_age(outlet_details['year'])
     
-
     st.write(f"Outlet Size: {outlet_size}")
     st.write(f"Outlet Age: {outlet_age}")
     st.write(f"Outlet Type: {outlet_type}")
